@@ -53,13 +53,18 @@ BULLET_Y = 0
 BULLET_VEL_X = 0
 BULLET_VEL_Y = 0
 
-BULLET_DAMAGE = 25
+FrameTime = pygame.time.get_ticks()
+StartTime = pygame.time.get_ticks()
+CurrentTime = 0
 
 while True:
+    CurrentTime = pygame.time.get_ticks()
+    if CurrentTime - FrameTime >= 500:
+        BossFrames.append(BossFrames.pop(0))
+        FrameTime = CurrentTime
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit(0)
-
         keys = pygame.key.get_pressed()
         # PLAYER MOVEMENT
         if keys[pygame.K_d]:
@@ -103,6 +108,6 @@ while True:
         window.blit(PlayerFrameRight, (PLAYER_X, PLAYER_Y))
     elif PlayerSide == ("Left"):
         window.blit(PlayerFrameLeft, (PLAYER_X, PLAYER_Y))
-    window.blit(BossFrame1, (600, 300))
+    window.blit(BossFrames[0], (500, 50))
     pygame.display.flip() # Need this for refreshing screen
     clock.tick(60) # Fps limit
