@@ -2,21 +2,34 @@ import pygame
 import sys
 pygame.init()
 clock = pygame.time.Clock()
-# DAY 1
+# DAY 1 -- Done
 # Build player movement
 # Make it so that player image goes left or right to movement
 # Add shooting mechanic
 
-# DAY 2
+# DAY 2 -- Done
 # Add Jumping system
 # Add Test enemy
 # Make the bullets damage
+
+# DAY 3
+# Add Title Screen
+# Make Win screen
+# Make boss attack back
+
+# DAY 4
+# Make boss attack damage player
+# Make boss move 
+# Add barrier to prevent player from running out of screen
 
 window = pygame.display.set_mode((1000, 600))
 window.fill((0, 0, 0))
 pygame.display.set_caption("Eclipso requime")
 
 FONT = pygame.font.Font("augiepixel.ttf", 75)
+
+Background = pygame.image.load(("Background.png")).convert_alpha()
+Background = pygame.transform.scale(Background, (1000, 600))
 
 PlayerFrameLeft = pygame.image.load(("PlayerSpriteLeft.png")).convert_alpha()
 PlayerFrameLeft = pygame.transform.scale(PlayerFrameLeft, (100, 100))
@@ -90,6 +103,8 @@ while True:
 
         if keys[pygame.K_SPACE]:
             jumping = True
+        if keys[pygame.K_w]:
+            jumping = True
         # GUN SYSTEM
         if event.type == pygame.MOUSEBUTTONDOWN:
             BulletShot = True
@@ -118,12 +133,11 @@ while True:
     BOSS_X += BOSS_VEL_X
     BOSS_Y += BOSS_VEL_Y
 
-    window.fill((0, 0, 0))
+    window.blit(Background, (0, 0)) 
+    # DRAW SPRITES AFTER THIS!!!
     if BulletShot == True:    
         window.blit(Bulletsprite, (BULLET_X + 75, BULLET_Y + 45)) # BULLET PLACEMENT
-
-    # PLAYER SPRITE DIRECTION CHANGE
-    if PlayerSide == ("Right"):
+    if PlayerSide == ("Right"): # PLAYER SPRITE DIRECTION CHANGE
         window.blit(PlayerFrameRight, (PLAYER_X, PLAYER_Y))
     elif PlayerSide == ("Left"):
         window.blit(PlayerFrameLeft, (PLAYER_X, PLAYER_Y))
