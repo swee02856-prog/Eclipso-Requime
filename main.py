@@ -16,6 +16,8 @@ window = pygame.display.set_mode((1000, 600))
 window.fill((0, 0, 0))
 pygame.display.set_caption("Eclipso requime")
 
+FONT = pygame.font.Font("augiepixel.ttf", 75)
+
 PlayerFrameLeft = pygame.image.load(("PlayerSpriteLeft.png")).convert_alpha()
 PlayerFrameLeft = pygame.transform.scale(PlayerFrameLeft, (100, 100))
 PlayerFrameRight = pygame.image.load(("PlayerSpriteRight.png")).convert_alpha()
@@ -29,8 +31,14 @@ BossFrame3 = pygame.image.load(("Monster1Frame3.png")).convert_alpha()
 BossFrame3 = pygame.transform.scale(BossFrame3, (400, 400))
 
 BossFrames = [BossFrame1, BossFrame2, BossFrame3]
-
 BossHealth = 1000
+
+BOSS_X = 600
+BOSS_Y = 50
+BOSS_VEL_X = 0
+BOSS_VEL_Y = 0
+
+BossHitbox = pygame.Rect(BOSS_X, BOSS_Y, 350, 350) # Boss hitbox 
 
 PLAYER_X = 300
 PLAYER_Y = 400
@@ -52,6 +60,10 @@ BULLET_X = 0
 BULLET_Y = 0
 BULLET_VEL_X = 0
 BULLET_VEL_Y = 0
+
+BulletHitbox = pygame.Rect(BULLET_X, BULLET_Y, 25, 25) # Bullet hitbox
+BulletShot = False
+BulletDamage = 25
 
 FrameTime = pygame.time.get_ticks()
 StartTime = pygame.time.get_ticks()
@@ -80,14 +92,15 @@ while True:
             jumping = True
         # GUN SYSTEM
         if event.type == pygame.MOUSEBUTTONDOWN:
+            BulletShot = True
             BULLET_X = PLAYER_X # Bullet stays next to player so it
             BULLET_Y = PLAYER_Y # dont spawn outside of the player
             if PlayerSide == ("Right"):
                 window.blit(Bulletsprite, (BULLET_X, BULLET_Y))
-                BULLET_VEL_X = 25
+                BULLET_VEL_X = 35
             elif PlayerSide == ("Left"):
                 window.blit(Bulletsprite, (BULLET_X, BULLET_Y))
-                BULLET_VEL_X = -25
+                BULLET_VEL_X = -35
 
     if jumping: # Jumping system
         PLAYER_Y -= Y_VELOCITY
@@ -100,14 +113,25 @@ while True:
     PLAYER_Y += PLAYER_VEL_Y
     BULLET_X += BULLET_VEL_X
     BULLET_Y += BULLET_VEL_Y
+    BulletHitbox.x = BULLET_X + 75
+    BulletHitbox.y = BULLET_Y + 45
+    BOSS_X += BOSS_VEL_X
+    BOSS_Y += BOSS_VEL_Y
 
     window.fill((0, 0, 0))
-    window.blit(Bulletsprite, (BULLET_X + 75, BULLET_Y + 45)) # BULLET PLACEMENT
+    if BulletShot == True:    
+        window.blit(Bulletsprite, (BULLET_X + 75, BULLET_Y + 45)) # BULLET PLACEMENT
+
     # PLAYER SPRITE DIRECTION CHANGE
     if PlayerSide == ("Right"):
         window.blit(PlayerFrameRight, (PLAYER_X, PLAYER_Y))
     elif PlayerSide == ("Left"):
         window.blit(PlayerFrameLeft, (PLAYER_X, PLAYER_Y))
-    window.blit(BossFrames[0], (500, 50))
+    if BulletShot == True and BulletHitbox.colliderect(BossHitbox):
+        BulletShot = False  # Preventing boss from recieving more than 25 dmg per hit
+        BossHealth -= BulletDamage
+    window.blit(BossFrames[0], (BOSS_X, BOSS_Y))
+    BossHealthText = FONT.render(f"Boss Health: {BossHealth}", True, (255, 255, 255))
+    window.blit(BossHealthText, (50, 0))
     pygame.display.flip() # Need this for refreshing screen
     clock.tick(60) # Fps limit
