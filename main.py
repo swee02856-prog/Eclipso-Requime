@@ -1,4 +1,5 @@
 import pygame
+import math
 import sys
 pygame.init()
 pygame.mixer.init()
@@ -13,21 +14,29 @@ clock = pygame.time.Clock()
 # Add Test enemy
 # Make the bullets damage
 
-# DAY 3
+# DAY 3 -- Done
 # Add Title Screen
-# Make Win screen
+# Add Sound effects
+# Add win screen
 # Make boss attack back
 
-# DAY 4
+# DAY 4 -- Done
 # Make boss attack damage player
 # Make boss move 
 # Add barrier to prevent player from running out of screen
+# Add cheering sound effect when player wins
+
+# DAY 5 
+# Make boss keep attacking until player dies or player kills boss
+# Make boss actually move from left to right part  of the screen
+# Add player recoil when shooting & effects
 
 window = pygame.display.set_mode((1000, 600))
 window.fill((0, 0, 0))
 pygame.display.set_caption("Eclipso requime")
 
 FONT = pygame.font.Font("augiepixel.ttf", 75)
+GAMEWINFONT = pygame.font.Font("augiepixel.ttf", 90)
 
 PlayButtonRect = pygame.Rect(400, 200, 150, 150) # Play button
 
@@ -59,10 +68,17 @@ BOSS_VEL_Y = 0
 
 BossHitbox = pygame.Rect(BOSS_X, BOSS_Y, 350, 350) # Boss hitbox 
 
+Floor = pygame.surface.Surface((1000, 200))
+Floor.fill((0, 0,0 ))
+
+PlayerHealth = 150
+
 PLAYER_X = 300
 PLAYER_Y = 400
 PLAYER_VEL_X = 0
 PLAYER_VEL_Y = 0
+
+PlayerHitbox = pygame.Rect(PLAYER_X, PLAYER_Y, 100, 100) # Player hitbox
 
 # Jumping system stuff I copied off youtube
 Y_GRAVITY = 1
@@ -105,10 +121,16 @@ ShootSound.set_volume(0.3)
 FrameTime = pygame.time.get_ticks()
 StartTime = pygame.time.get_ticks()
 CurrentTime = 0
-CurrentEvent = "Playing"
+
+CurrentEvent = "TitleScreen"
 
 while True:
     CurrentTime = pygame.time.get_ticks()
+    BossHealthFloat = math.sin(CurrentTime * 0.005) * 10
+    BossFloat = math.sin(CurrentTime * 0.002) * 7
+    PlayerIdleFloat = math.sin(CurrentTime * 0.005) * 2
+    if PLAYER_VEL_X != 0:
+        PlayerIdleFloat = math.sin(CurrentTime * 0.01) * 4
     if CurrentTime - FrameTime >= 500:
         BossFrames.append(BossFrames.pop(0))
         FrameTime = CurrentTime
@@ -151,41 +173,63 @@ while True:
             JumpSound.play()
             jumping = False
             Y_VELOCITY = JUMP_HEIGHT
+# BARRIER (Why does this actually work)
+    if PLAYER_X < 0:
+        PLAYER_X = 0
+    if PLAYER_X > 900:
+        PLAYER_X = 900
 
     PLAYER_X += PLAYER_VEL_X
     PLAYER_Y += PLAYER_VEL_Y
+    PlayerHitbox.x = PLAYER_X
+    PlayerHitbox.y = PLAYER_Y
     BULLET_X += BULLET_VEL_X
     BULLET_Y += BULLET_VEL_Y
     BulletHitbox.x = BULLET_X + 75
     BulletHitbox.y = BULLET_Y + 45
     BOSS_X += BOSS_VEL_X
     BOSS_Y += BOSS_VEL_Y
+    BossHitbox.x = BOSS_X
+    BossHitbox.y = BOSS_Y + BossFloat
     ORBSPRITE_X += ORBSPRITE_VEL_X
     ORBSPRITE_Y += ORBSPRITE_VEL_Y
+    OrbHitbox.x = ORBSPRITE_X
+    OrbHitbox.y = ORBSPRITE_Y
 
 
-    # DRAW SPRITES AFTER THIS!!!
+    # DRAW SPRITES AFTER THIS!!! Cuz i keep making the same dumb mistake
     window.blit(Background, (0, 0)) 
-    window.blit(Orbsprite, (ORBSPRITE_X, ORBSPRITE_Y))
     if BulletShot == True:    
         window.blit(Bulletsprite, (BULLET_X + 75, BULLET_Y + 45)) # BULLET PLACEMENT
     if PlayerSide == ("Right"): # PLAYER SPRITE DIRECTION CHANGE
-        window.blit(PlayerFrameRight, (PLAYER_X, PLAYER_Y))
+        window.blit(PlayerFrameRight, (PLAYER_X, PLAYER_Y + PlayerIdleFloat))
     elif PlayerSide == ("Left"):
-        window.blit(PlayerFrameLeft, (PLAYER_X, PLAYER_Y))
+        window.blit(PlayerFrameLeft, (PLAYER_X, PLAYER_Y + PlayerIdleFloat))
     if BulletShot == True and BulletHitbox.colliderect(BossHitbox):
         BulletShot = False  # Preventing boss from recieving more than 25 dmg per hit
         BossHealth -= BulletDamage
-    # if CurrentEvent == "TitleScreen":
-    #     window.blit(TitleScreenBackground, (0, 0))
-    #     PlayText = FONT.render("-play-", True, (0, 255, 251))
-    #     window.blit(PlayText, (400, 200))
-    #     if event.type == pygame.MOUSEBUTTONDOWN:
-    #         if PlayButtonRect.collidepoint(MousePosition):
-    #             CurrentEvent = "Playing"
-    if CurrentEvent == "Playing":   
-        window.blit(BossFrames[0], (BOSS_X, BOSS_Y))
+    if PlayerHitbox.colliderect(OrbHitbox):
+        PlayerHealth -= 15
+    if CurrentEvent == "TitleScreen":
+        window.blit(TitleScreenBackground, (0, 0))
+        PlayText = GAMEWINFONT.render("-play-", True, (0, 255, 251))
+        window.blit(PlayText, (400, 200))
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if PlayButtonRect.collidepoint(MousePosition):
+                CurrentEvent = "Playing"
+    if CurrentEvent == "Playing":
+        window.blit(Floor, (0, 500))
+        window.blit(Orbsprite, (ORBSPRITE_X, ORBSPRITE_Y))
         BossHealthText = FONT.render(f"Boss Health: {BossHealth}", True, (255, 255, 255))
-        window.blit(BossHealthText, (50, 0))
+        PlayerHealthText = FONT.render(f"You got {PlayerHealth} left..", True, (255, 255, 255))
+        window.blit(BossFrames[0], (BOSS_X, BOSS_Y + BossFloat))
+        window.blit(BossHealthText, (50, 15 + BossHealthFloat))
+        window.blit(PlayerHealthText, (50, 500 + BossHealthFloat))
+        if BossHealth == 0:
+            CurrentEvent = "Win"
+    if CurrentEvent == "Win":
+        WinText = GAMEWINFONT.render("You beat Verndastare!", True, (255, 255, 255))
+        window.blit(WinText, (75, 300 + BossHealthFloat))
+
     pygame.display.flip() # Need this for refreshing screen
-    clock.tick(60) # Fps limit
+    clock.tick(60) # Fps limit cuz I keep forgetting
