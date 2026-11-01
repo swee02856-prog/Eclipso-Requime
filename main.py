@@ -1,6 +1,12 @@
 import pygame
 import math
 import sys
+import os
+
+def resource_path(filename):
+    base = getattr(sys, "_MEIPASS", ".")
+    return os.path.join(base, filename)
+
 pygame.init()
 pygame.mixer.init()
 clock = pygame.time.Clock()
@@ -26,38 +32,38 @@ clock = pygame.time.Clock()
 # Add barrier to prevent player from running out of screen
 # Add cheering sound effect when player wins
 
-# DAY 5 
+# DAY 5 -- Done
 # Make boss keep attacking until player dies or player kills boss
 # Make boss actually move from left to right part  of the screen
-# Add player recoil when shooting & effects
+# Add more sound effects
 
 window = pygame.display.set_mode((1000, 600))
 window.fill((0, 0, 0))
 pygame.display.set_caption("Eclipso requime")
 
-SMALLFONT = pygame.font.Font("augiepixel.ttf", 45)
-FONT = pygame.font.Font("augiepixel.ttf", 75)
-GAMEWINFONT = pygame.font.Font("augiepixel.ttf", 90)
-BIGFONT = pygame.font.Font("augiepixel.ttf", 120)
+SMALLFONT = pygame.font.Font(resource_path("augiepixel.ttf"), 45)
+FONT = pygame.font.Font(resource_path("augiepixel.ttf"), 75)
+GAMEWINFONT = pygame.font.Font(resource_path("augiepixel.ttf"), 90)
+BIGFONT = pygame.font.Font(resource_path("augiepixel.ttf"), 120)
 
 PlayButtonRect = pygame.Rect(400, 200, 150, 150) # Play button
 
-Background = pygame.image.load(("Background.png")).convert_alpha()
+Background = pygame.image.load(resource_path("Background.png")).convert_alpha()
 Background = pygame.transform.scale(Background, (1000, 600))
 
-TitleScreenBackground = pygame.image.load(("EclipsoRequimTitleBackground.png"))
+TitleScreenBackground = pygame.image.load(resource_path("EclipsoRequimTitleBackground.png"))
 TitleScreenBackground = pygame.transform.scale(TitleScreenBackground, (1000, 600))
 
-PlayerFrameLeft = pygame.image.load(("PlayerSpriteLeft.png")).convert_alpha()
+PlayerFrameLeft = pygame.image.load(resource_path("PlayerSpriteLeft.png")).convert_alpha()
 PlayerFrameLeft = pygame.transform.scale(PlayerFrameLeft, (100, 100))
-PlayerFrameRight = pygame.image.load(("PlayerSpriteRight.png")).convert_alpha()
+PlayerFrameRight = pygame.image.load(resource_path("PlayerSpriteRight.png")).convert_alpha()
 PlayerFrameRight = pygame.transform.scale(PlayerFrameRight, (100, 100))
 
-BossFrame1 = pygame.image.load(("Monster1Frame1.png")).convert_alpha()
+BossFrame1 = pygame.image.load(resource_path("Monster1Frame1.png")).convert_alpha()
 BossFrame1 = pygame.transform.scale(BossFrame1, (400, 400))
-BossFrame2 = pygame.image.load(("Monster1Frame2.png")).convert_alpha()
+BossFrame2 = pygame.image.load(resource_path("Monster1Frame2.png")).convert_alpha()
 BossFrame2 = pygame.transform.scale(BossFrame2, (400, 400))
-BossFrame3 = pygame.image.load(("Monster1Frame3.png")).convert_alpha()
+BossFrame3 = pygame.image.load(resource_path("Monster1Frame3.png")).convert_alpha()
 BossFrame3 = pygame.transform.scale(BossFrame3, (400, 400))
 
 BossFrames = [BossFrame1, BossFrame2, BossFrame3]
@@ -89,12 +95,12 @@ Y_GRAVITY = 1
 JUMP_HEIGHT = 20
 Y_VELOCITY = JUMP_HEIGHT
 jumping = False
-JumpSound = pygame.mixer.Sound("jumpsoundeffect.mp3")
+JumpSound = pygame.mixer.Sound(resource_path("jumpsoundeffect.mp3"))
 JumpSound.set_volume(0.5)
 
 PlayerSide = ("Right") # List for current player direction
 
-Bulletsprite = pygame.image.load(("Bullet.png")).convert_alpha()
+Bulletsprite = pygame.image.load(resource_path("Bullet.png")).convert_alpha()
 Bulletsprite = pygame.transform.scale(Bulletsprite, (15, 15))
 
 BULLET_X = 0
@@ -106,7 +112,7 @@ BulletHitbox = pygame.Rect(BULLET_X, BULLET_Y, 25, 25) # Bullet hitbox
 BulletShot = False
 BulletDamage = 25
 
-Orbsprite = pygame.image.load(("orbprojectile.png")).convert_alpha()
+Orbsprite = pygame.image.load(resource_path("orbprojectile.png")).convert_alpha()
 Orbsprite = pygame.transform.scale(Orbsprite, (100, 100))
 
 ORBSPRITE_X = 0
@@ -121,14 +127,14 @@ OrbHitbox = pygame.Rect(ORBSPRITE_X, ORBSPRITE_Y, 50, 50)
 
 OrbHit = False
 
-ShootSound = pygame.mixer.Sound("shootsoundeffect.mp3")
+ShootSound = pygame.mixer.Sound(resource_path("shootsoundeffect.mp3"))
 ShootSound.set_volume(0.3)
 
-SelectSound = pygame.mixer.Sound("click.mp3")
+SelectSound = pygame.mixer.Sound(resource_path("click.mp3"))
 
-HurtSound = pygame.mixer.Sound("retro-hurt.mp3")
+HurtSound = pygame.mixer.Sound(resource_path("retro-hurt.mp3"))
 
-CheeringSound = pygame.mixer.Sound("cheering.mp3")
+CheeringSound = pygame.mixer.Sound(resource_path("cheering.mp3"))
 
 FrameTime = pygame.time.get_ticks()
 StartTime = pygame.time.get_ticks()
@@ -151,7 +157,7 @@ while True:
     for event in pygame.event.get():
         MousePosition = pygame.mouse.get_pos()
         if event.type == pygame.QUIT:
-            quit(0)
+            sys.exit()
 
         keys = pygame.key.get_pressed()
         # PLAYER MOVEMENT
