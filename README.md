@@ -22,8 +22,7 @@ You can only play this game on a linux based operating system, basically for exa
 - etc..
 
 **HOW TO DOWNLOAD!**
-If you meet the requirements to play you can simply go to releases and download the newest version
-of the game and then open it to play.
+If you meet the requirements to play you can simply go to releases and download the Tar file and extract it to the area you want, then open it to start playing!
 OR you can download the Source code in this github repo and use an ide to play! (You must have pygame downloaded)
 **DIRECTIONS ON GAMEPLAY**
 WAD TO MOVE!
