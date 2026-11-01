@@ -13,7 +13,9 @@ from the boss.
 You play as Giovanna, a bald masquerade shooter who is forced to fight a 1,500 health boss until he
 defeats the boss or he dies!
 The story is very vague because this is just a demo.
+
 **REQUIREMENTS TO PLAY!!**
+
 You can only play this game on a linux based operating system, basically for example
 - linux mint
 - arch linux
