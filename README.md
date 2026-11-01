@@ -34,3 +34,5 @@ Click - Shoot
 **And thats all!** have fun!
 <img width="863" height="539" alt="Screenshot_2026-11-01_11-54-04" src="https://github.com/user-attachments/assets/5b3efd89-670a-4d29-b07e-d70a439a2f99" />
 
+THIS PROJECT WAS SUBMITTED TO HACKCLUB TERRA YSWS!
+
