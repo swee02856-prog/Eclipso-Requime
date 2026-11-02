@@ -6,6 +6,9 @@ What is this?
 
 This is a 2d masquerade boss killing shooter, 
 basically a demo version of Cuphead if you put it into perspective.
+
+The reason I made it was because of a specific inspiration that I gained after resting outside my house, I thought.. What if I recreated saitama or caillou and put him in cuphead?? And that is the idea of this game pretty much lmao. Now I made it using pygame thanks to the snek tutorial in the snek ysws, it was pretty easy to make but very hard to get my creative brain to work.
+
 <img width="884" height="583" alt="Screenshot_2026-11-01_11-53-31" src="https://github.com/user-attachments/assets/41a67af8-6e11-407e-a2e5-dfc73cc74e40" />
 
 The Main idea is that the player fights a boss with 1,500 Health and avoid the incoming orb particle attacks
